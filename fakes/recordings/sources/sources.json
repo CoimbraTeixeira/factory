@@ -1,0 +1,13 @@
+{
+  "feeds": {
+    "The Flight Deal": "{base}/the-flight-deal.xml",
+    "Fly4Free": "{base}/fly4free.xml",
+    "Fare Deal Alert": "{base}/fare-deal-alert.xml",
+    "Travelfree": "{base}/travelfree.xml",
+    "Travel Dealz": "{base}/travel-dealz.xml",
+    "Travel Dealz DE": "{base}/travel-dealz-de.xml"
+  },
+  "pages": {
+    "Secret Flying": "{base}/secret-flying.html"
+  }
+}

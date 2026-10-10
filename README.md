@@ -66,3 +66,12 @@ python3 -m unittest discover -s tests
 No network: rule thresholds and windows, crash grouping (chained tracebacks, volatile
 numbers, network-vs-defect thresholds), last-run scoping for the untimestamped rebuild
 log, dead cron targets, and the issue lifecycle with `gh` stubbed.
+
+## CI and merging
+
+Same gates as the repos it serves: `master` is protected, a change lands only through a
+pull request once the `check` job (`.github/workflows/ci.yml`) passes, and that applies
+to admins too. `check` runs the secret scan over every tracked file
+(`python3 hooks/pre-commit --all`), `ruff check .` (syntax errors + pyflakes, rules in
+`ruff.toml`) and the tests. Enable the local copy of the secret guard once per clone with
+`git config core.hooksPath hooks`.

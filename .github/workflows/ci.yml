@@ -1,0 +1,30 @@
+name: CI
+
+# Every change to master goes through this: branch protection requires the `check` job
+# to pass before a pull request can merge.
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      # Standard library only; ruff is the one tool the gate needs.
+      - name: Install
+        run: pip install ruff==0.17.0
+      # The local pre-commit hook is opt-in and skippable; this run is not.
+      - name: Secret scan
+        run: python hooks/pre-commit --all
+      - name: Lint
+        run: ruff check .
+      - name: Tests
+        run: python -m unittest discover -s tests

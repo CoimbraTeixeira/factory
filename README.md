@@ -149,6 +149,43 @@ two Travel Dealz feeds and the scanned PDF. The feeds are a snapshot, so fare-mo
 24-hour lookback finds nothing in them a day after recording; a scenario that needs a
 fresh deal writes its own feed into a copy of the recordings.
 
+## Hidden scenarios
+
+`scenarios/runner.py` runs end-to-end user stories against the fakes and reports
+**satisfaction**: the fraction of scenarios whose every check passed. Each scenario runs
+the real monitor scripts from the live checkouts in its own sandbox, against inputs
+built for it, and checks what Discord would have received -- "a scanned paper filing gets
+exactly one alert, and it says paper", "an expired error fare never alerts".
+
+```sh
+./scenarios/runner.py                  # every scenario
+./scenarios/runner.py --only fare-     # IDs containing "fare-"
+./scenarios/runner.py --notify         # nightly: post failing IDs to Discord
+```
+
+```cron
+30 6 * * * /usr/bin/python3 /home/rogerio/Documents/repos/factory/scenarios/runner.py --notify >> /home/rogerio/Documents/repos/factory/scenarios.log 2>&1
+```
+
+**The scenarios are not in this repo.** They live in `~/factory-scenarios` (override with
+`--scenarios-dir` or `FACTORY_SCENARIOS_DIR`), outside every checkout a coding agent works
+in. Tests an agent can read are tests it can satisfy without making the code right; these
+are held out, like a model's test set. For the same reason `--notify` posts only failing
+IDs, and the runner never runs in CI, whose logs are public.
+
+A scenario module defines `SCENARIOS`, a list of `Scenario(id, repo, story, steps,
+checks, setup=, seed=, rate_limit_first=)`. `setup` writes inputs into the scenario's own
+copy of the recordings, `seed` prepares monitor state once the sandbox is up, and a
+`Step` can carry a `before` hook -- which is how the publish gap is staged: run with the
+PDF missing, publish it, run again. `scenarios/builders.py` writes inputs dated relative
+to the run (recorded feeds age out of fare-monitor's 24-hour window within a day): RSS
+feeds, Secret Flying pages with or without the EXPIRED stamp, recorded Yahoo quotes, and
+PDFs published to or withdrawn from the fake Clerk.
+
+A scenario suite that passes against broken code proves nothing, so the set was checked
+by mutation: six of the bugs fixed in these repos were reintroduced one at a time into a
+copy of the checkouts, and each made exactly the scenario written for it fail.
+
 ## Tests
 
 ```sh

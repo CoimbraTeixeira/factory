@@ -222,6 +222,9 @@ def main() -> int:
     parser.add_argument("--min-satisfaction", type=float, default=1.0)
     parser.add_argument("--notify", action="store_true",
                         help="post failing scenario IDs to Discord when below the bar")
+    parser.add_argument("--report", type=Path, default=REPORT_PATH,
+                        help="where to write the JSON report (the PR check runs the "
+                             "factory checkout read-only)")
     args = parser.parse_args()
 
     scenarios = [s for s in load_scenarios(args.scenarios_dir)
@@ -243,8 +246,8 @@ def main() -> int:
     satisfaction = satisfied / len(outcomes)
     print(f"\nSatisfaction: {satisfied}/{len(outcomes)} ({satisfaction:.0%}) "
           f"in {(datetime.now(timezone.utc) - started).total_seconds():.0f}s")
-    REPORT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    REPORT_PATH.write_text(json.dumps({
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    args.report.write_text(json.dumps({
         "run_at": started.isoformat(), "satisfaction": satisfaction,
         "outcomes": [{"id": o.id, "satisfied": o.satisfied, "failures": o.failures}
                      for o in outcomes]}, indent=2))

@@ -5,7 +5,8 @@ software factory: agents do the work, automated gates decide what can merge, and
 production problems arrive as tasks instead of being found by reading logs.
 
 Step 1, gates on every repo, lives in each repo (`.github/workflows/ci.yml`, protected
-`master`). This repo holds what spans all of them.
+`master`). This repo holds what spans all of them: the log auditor (step 2), fake
+services (3), hidden scenarios (4) and the agent harness (5).
 
 ## Log auditor
 
@@ -186,6 +187,70 @@ A scenario suite that passes against broken code proves nothing, so the set was 
 by mutation: six of the bugs fixed in these repos were reintroduced one at a time into a
 copy of the checkouts, and each made exactly the scenario written for it fail.
 
+## Agent harness
+
+`harness/agent_harness.py` turns GitHub issues labelled **`agent`** into pull requests
+written by a coding agent. Hourly, it takes the oldest open `agent` issue across the four
+repos, clones that repo, and runs `omp -p --auto-approve` on it in a Docker container. If
+the agent commits, the harness pushes `agent/issue-<n>` and opens a PR that fixes the
+issue. **It never merges.**
+
+```mermaid
+flowchart LR
+  I[issue labelled agent] --> H[harness, hourly]
+  H --> C[agent in container]
+  C -- commits --> P[harness pushes, opens PR]
+  P --> CI[CI: check]
+  P --> S[scenario_status: hidden scenarios]
+  CI --> M{you merge}
+  S --> M
+```
+
+```sh
+./harness/agent_harness.py --dry-run   # which issue it would take, and the prompt
+./harness/agent_harness.py             # what cron runs
+./harness/scenario_status.py           # post `scenarios` statuses on open PRs
+```
+
+```cron
+45 * * * * /usr/bin/python3 /home/rogerio/Documents/repos/factory/harness/agent_harness.py >> /home/rogerio/Documents/repos/factory/agent.log 2>&1
+*/5 * * * * /usr/bin/python3 /home/rogerio/Documents/repos/factory/harness/scenario_status.py >> /home/rogerio/Documents/repos/factory/scenario_status.log 2>&1
+```
+
+Label only issues you want worked: the log auditor files issues but does not label them
+`agent`, so its findings wait for you.
+
+### Containment
+
+`--auto-approve` gives the agent a full shell, so it runs as your user inside the
+`factory-agent` image (`harness/Dockerfile`: Python 3.12, git, poppler, the repos'
+requirements, ruff) and sees:
+
+- a fresh clone of one repo at `/work`, and an empty home;
+- `omp`, bind-mounted read-only from the host;
+- **no credentials.** Model requests go to `harness/gateway_relay.py`, which forwards the
+  one model route to `omp auth-gateway stdio` running on the host. The relay listens only
+  on the Docker bridge address with a per-run token. GitHub access stays outside: the
+  agent commits, the harness pushes.
+
+It does not see `~/factory-scenarios` (the held-out tests), `~/.config/fare-monitor` (the
+real webhook), the live checkouts or their state, or `~/.omp` (whose session history
+describes the scenarios). A change touching the gates themselves -- `.github/`,
+`hooks/`, `ruff.toml` -- is refused rather than pushed.
+
+Limits: 2 runs a day, 2 attempts per issue, 30 minutes per run. An attempt that changes
+nothing comments the agent's notes on the issue. State is in `state/agent_harness.json`.
+
+### The `scenarios` status
+
+Hidden scenarios cannot run in GitHub Actions, whose logs are public, so
+`harness/scenario_status.py` runs them here for every open PR on the three monitor repos
+and posts a `scenarios` commit status; branch protection requires it alongside `check`.
+It assembles `master` of each monitor repo with the PR's tree in its repo's place and runs
+the scenarios in the agent image with no network. The status says only
+"19/21 hidden scenarios satisfied" -- never which ones, since a PR author who learns the
+checks can satisfy them without making the code right.
+
 ## Tests
 
 ```sh
@@ -198,6 +263,9 @@ log, dead cron targets, and the issue lifecycle with `gh` stubbed. For the fakes
 the 404 publish gap, path traversal, the webhook's 204/400/429, the recorder with its
 fetches stubbed, and the sandbox's env and runs against stand-in checkouts -- none of it
 needs the monitor repos.
+For the harness: the model relay's auth, routing and `model` renaming against a stub
+gateway process; work selection order and limits; the prompt; refusing changes to the
+gates; and `scenarios` statuses that never name a scenario.
 
 ## CI and merging
 

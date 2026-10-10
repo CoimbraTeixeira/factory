@@ -1,0 +1,138 @@
+{
+ "generated_at": "2026-10-10T11:30:36.727215+00:00",
+ "source_leaderboard_generated_at": "2026-10-10T11:30:01.993111+00:00",
+ "rank_by": "alpha",
+ "benchmark_ticker": "SPY",
+ "members": [
+  {
+   "member": "Hon. Dwight Evans",
+   "member_key": [
+    "evans",
+    "PA03"
+   ],
+   "last": "Evans",
+   "first": "Dwight",
+   "state_dist": "PA03",
+   "return_pct_estimate": 151.06,
+   "alpha_pct_estimate": 113.74,
+   "benchmark_return_pct_estimate": 37.32
+  },
+  {
+   "member": "Hon. Debbie Wasserman Schultz",
+   "member_key": [
+    "wasserman schultz",
+    "FL25"
+   ],
+   "last": "Wasserman Schultz",
+   "first": "Debbie",
+   "state_dist": "FL25",
+   "return_pct_estimate": 100.13,
+   "alpha_pct_estimate": 69.68,
+   "benchmark_return_pct_estimate": 30.45
+  },
+  {
+   "member": "Hon. Nancy Pelosi",
+   "member_key": [
+    "pelosi",
+    "CA11"
+   ],
+   "last": "Pelosi",
+   "first": "Nancy",
+   "state_dist": "CA11",
+   "return_pct_estimate": 73.42,
+   "alpha_pct_estimate": 47.0,
+   "benchmark_return_pct_estimate": 26.43
+  },
+  {
+   "member": "Hon. Marjorie Taylor Greene",
+   "member_key": [
+    "greene",
+    "GA14"
+   ],
+   "last": "Greene",
+   "first": "Marjorie Taylor",
+   "state_dist": "GA14",
+   "return_pct_estimate": 68.13,
+   "alpha_pct_estimate": 32.19,
+   "benchmark_return_pct_estimate": 35.94
+  },
+  {
+   "member": "Hon. Robert E. Latta",
+   "member_key": [
+    "latta",
+    "OH05"
+   ],
+   "last": "Latta",
+   "first": "Robert E.",
+   "state_dist": "OH05",
+   "return_pct_estimate": 50.09,
+   "alpha_pct_estimate": 19.06,
+   "benchmark_return_pct_estimate": 31.03
+  },
+  {
+   "member": "Hon. Ed Case",
+   "member_key": [
+    "case",
+    "HI01"
+   ],
+   "last": "Case",
+   "first": "Ed",
+   "state_dist": "HI01",
+   "return_pct_estimate": 39.98,
+   "alpha_pct_estimate": 14.57,
+   "benchmark_return_pct_estimate": 25.41
+  },
+  {
+   "member": "Hon. Michael Patrick Guest",
+   "member_key": [
+    "guest",
+    "MS03"
+   ],
+   "last": "Guest",
+   "first": "Michael Patrick",
+   "state_dist": "MS03",
+   "return_pct_estimate": 78.51,
+   "alpha_pct_estimate": 14.34,
+   "benchmark_return_pct_estimate": 64.17
+  },
+  {
+   "member": "Hon. Morgan McGarvey",
+   "member_key": [
+    "mcgarvey",
+    "KY03"
+   ],
+   "last": "McGarvey",
+   "first": "Morgan",
+   "state_dist": "KY03",
+   "return_pct_estimate": 22.48,
+   "alpha_pct_estimate": 13.35,
+   "benchmark_return_pct_estimate": 9.13
+  },
+  {
+   "member": "Hon. Lisa McClain",
+   "member_key": [
+    "mcclain",
+    "MI09"
+   ],
+   "last": "McClain",
+   "first": "Lisa",
+   "state_dist": "MI09",
+   "return_pct_estimate": 19.34,
+   "alpha_pct_estimate": 11.5,
+   "benchmark_return_pct_estimate": 7.84
+  },
+  {
+   "member": "Cleo Fields",
+   "member_key": [
+    "fields",
+    "LA06"
+   ],
+   "last": "Fields",
+   "first": "Cleo",
+   "state_dist": "LA06",
+   "return_pct_estimate": 34.85,
+   "alpha_pct_estimate": 10.37,
+   "benchmark_return_pct_estimate": 24.47
+  }
+ ]
+}

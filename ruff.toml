@@ -1,0 +1,6 @@
+# Lint gate, run locally and in CI with the same rules.
+# Deliberately narrow: syntax errors and pyflakes (undefined names, unused imports,
+# shadowed definitions) -- defects, not style. A style rule that fires on existing code
+# would make the gate a reformatting job instead of a bug catcher.
+[lint]
+select = ["E9", "F"]

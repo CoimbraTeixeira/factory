@@ -1,3 +1,4 @@
 state/
 auditor.log
+scenarios.log
 __pycache__/
